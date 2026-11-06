@@ -240,69 +240,13 @@ After running `php artisan db:seed`, you can log in with:
 | Method | URI | Name | Description |
 |---|---|---|---|
 | `GET` | `/` | `home` | Homepage with hero, search, featured & latest properties |
-| `GET` | `/about` | `about` | About the agency, company values, and team |
-| `GET` | `/map` | `map` | Interactive map search using Leaflet & OpenStreetMap |
-| `GET` | `/properties` | `properties.index` | Paginated property listings with search & filters |
-| `GET` | `/properties/{property}` | `properties.show` | Detailed property information & inquiry form |
-| `GET` | `/contact` | `contact.create` | Contact form & office details |
-| `POST` | `/contact` | `contact.store` | Submit contact inquiry |
-| `GET` | `/special-requests` | `special-requests.create` | Custom property search request form |
-| `POST` | `/special-requests` | `special-requests.store` | Submit custom property request |
-| `GET` | `/investors` | `investors.index` | Investment opportunities and agency portfolio |
-| `GET` | `/investors/inquiry` | `investors.create` | Investor inquiry application |
-| `POST` | `/investors/inquiry` | `investors.store` | Submit investor inquiry |
-| `GET` | `/geocoding/search` | `geocoding.search` | Proxied location coordinate search (Nominatim) |
-| `GET` | `/geocoding/reverse`| `geocoding.reverse`| Proxied reverse coordinate lookup |
 
 ### Admin Routes (`/admin` - Protected by `auth` middleware)
 
 | Method | URI | Name | Description |
 |---|---|---|---|
 | `GET` | `/admin` | `admin.dashboard` | Admin dashboard with analytics & counters |
-| `RESOURCE` | `/admin/properties` | `admin.properties.*` | Full CRUD operations for listings |
-| `POST` | `/admin/properties/{property}/images` | `admin.properties.images.store` | Upload property images |
-| `DELETE` | `/admin/properties/{property}/images/{image}` | `admin.properties.images.destroy` | Delete a property image |
-| `GET` | `/admin/inquiries` | `admin.inquiries.index` | List customer contact inquiries |
-| `GET` | `/admin/inquiries/{inquiry}` | `admin.inquiries.show` | View inquiry details |
-| `PATCH` | `/admin/inquiries/{inquiry}/status` | `admin.inquiries.updateStatus` | Update contact inquiry status |
-| `DELETE` | `/admin/inquiries/{inquiry}` | `admin.inquiries.destroy` | Delete contact inquiry |
-| `GET` | `/admin/requests` | `admin.requests.index` | List special property requests |
-| `PATCH` | `/admin/requests/{request}/status` | `admin.requests.updateStatus` | Update special request status |
-| `GET` | `/admin/investments` | `admin.investments.index` | List investor inquiries |
-| `PATCH` | `/admin/investments/{inquiry}/status` | `admin.investments.updateStatus` | Update investor inquiry status |
-| `GET` | `/admin/themes` | `admin.themes.index` | Theme manager & active theme selector |
-| `POST` | `/admin/themes` | `admin.themes.store` | Create a new theme clone |
-| `POST` | `/admin/themes/activate` | `admin.themes.activate` | Set active frontend theme |
-| `GET` | `/admin/themes/{theme}/edit` | `admin.themes.edit` | In-browser theme code editor |
-| `POST` | `/admin/themes/{theme}/files` | `admin.themes.files.store` | Create new theme file |
-| `PUT` | `/admin/themes/{theme}/files` | `admin.themes.files.update` | Save edited theme file |
-| `DELETE` | `/admin/themes/{theme}/files` | `admin.themes.files.destroy` | Delete theme file |
 
----
-
-## 💾 Database Schema
-
-The database consists of structured relational tables with indexed lookups:
-
-1. **`properties`**:
-   - `id`, `title`, `description`, `price`, `type` (`residential`, `commercial`, `land`).
-   - `location`, `address`, `latitude`, `longitude`, `area`, `bedrooms`, `bathrooms`, `parking_spaces`.
-   - `is_featured`, `is_available`, `hide_agent_info`.
-   - `agent_name`, `agent_contact`, `timestamps`.
-2. **`property_images`**:
-   - `id`, `property_id` (foreign key with cascade delete), `image_path`, `alt_text`, `order`, `timestamps`.
-3. **`contact_inquiries`**:
-   - `id`, `name`, `email`, `phone`, `subject`, `message`, `status` (`new`, `read`, `replied`), `timestamps`.
-4. **`special_requests`**:
-   - `id`, `name`, `email`, `phone`, `property_type_preference`, `location_preference`, `budget_range`, `request_details`, `status` (`pending`, `contacted`, `closed`), `timestamps`.
-5. **`investment_inquiries`**:
-   - `id`, `company_name`, `contact_person`, `email`, `phone`, `investment_type`, `investment_amount`, `preferred_location`, `inquiry_details`, `status`, `timestamps`.
-6. **`users`**:
-   - Laravel authentication table for administrators and users.
-7. **`settings`**:
-   - Key-value dynamic configuration table storing runtime options like active theme (`active_theme`).
-
----
 
 ## 🎨 Theme System Guide
 
@@ -340,31 +284,6 @@ Themes can be customized without editing core controllers. The `SettingsService`
 
 ---
 
-## ⚡ Common Artisan Commands
-
-| Task | Command |
-|---|---|
-| Start local server | `php artisan serve` |
-| Run migrations | `php artisan migrate` |
-| Reset & re-seed database | `php artisan migrate:refresh --seed` |
-| Clear all caches | `php artisan optimize:clear` |
-| Cache routes & config | `php artisan optimize` |
-| List registered routes | `php artisan route:list` |
-| Link storage directory | `php artisan storage:link` |
-| Open interactive shell | `php artisan tinker` |
-| Run test suite | `php artisan test` |
-
----
-
-## 🔒 Security & Best Practices
-
-- **CSRF Protection**: All POST/PUT/PATCH/DELETE forms are secured with Laravel CSRF tokens.
-- **SQL Injection Prevention**: Eloquent ORM parameterized queries prevent SQL injection across all models.
-- **XSS Sanitization**: Blade syntax (`{{ $var }}`) automatically escapes unsafe user content.
-- **Input Validation**: Dedicated form requests and validation rules ensure clean input before processing.
-- **CORS Protection**: Nominatim geocoding requests are proxied via server-side controller, safeguarding API endpoints.
-
----
 
 ## 📄 License
 
